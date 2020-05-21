@@ -42,6 +42,12 @@ layui.extend({
             layui.link(url + '?v=' + conf.v)
         });
         self.initView(self.route)
+        String.prototype.startsWith = function (str) {
+            if (str == null || str === "" || this.length === 0 || str.length > this.length) {
+                return false;
+            }
+            return this.substr(0, str.length) === str;
+        };
     };
     self.post = function (params) {
         view.request($.extend({type: 'post'}, params))
@@ -227,20 +233,14 @@ layui.extend({
         self.initView(self.route)
     });
 
-    //回车提交 form 表单
-    $(document).on('keydown', function (e) {
-        var ev = document.all ? window.event : e;
-        if (ev.keyCode === 13) {
-            var form = $(':focus').parents('.layui-form');
-            form.find('[lay-submit]').click()
-        }
-    });
-
     $(document).on('click', '[lay-href]', function (e) {
         var href = $(this).attr('lay-href');
         var target = $(this).attr('target');
 
         if (href === '') return;
+        if (href.startsWith('http')) {
+            window.open(href)
+        }
         if (self.isUrl(href)) {
             next()
         }
@@ -526,7 +526,7 @@ layui.extend({
         var defaultSetting = {
             cellMinWidth: 80,
             page: true,
-            skin: 'line',
+            skin: 'line row',
             limit: 10,
             limits: [5, 10, 20, 30, 40, 100],
             autoSort: false,
